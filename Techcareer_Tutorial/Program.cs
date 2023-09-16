@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Techcareer_Tutorial
 {
@@ -11,63 +12,91 @@ namespace Techcareer_Tutorial
         {
             //Ornek1();
             int yanlisGirisSayısı = 0;
-
-            
             int hesapUcreti = 0;
-            //IList<Personel> personels = new List<Personel>();
-            //personels.Add(new Personel() { Id = Guid.NewGuid(), FirstName = "Ramazan", LastName = "Küçükkoç", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(8), MolaSaati = 1, Email = "ramazankucukkoc43@gmail.com", Password = "12345" });
-            //personels.Add(new Personel() { Id = Guid.NewGuid(), FirstName = "Mustafa", LastName = "Avcı", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(5), MolaSaati = 2, Email = "mstf@gmail.com", Password = "12345" });
-            //personels.Add(new Personel() { Id = Guid.NewGuid(), FirstName = "Ali", LastName = "Koç", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(7), MolaSaati = 2, Email = "ali@gmail.com", Password = "12345" });
-            //personels.Add(new Personel() { Id = Guid.NewGuid(), FirstName = "Ihsan", LastName = "Demir", StartDate = DateTime.Now, EndDate = DateTime.Now.AddHours(5), MolaSaati = 4, Email = "ihsan@gmail.com", Password = "12345" });
-            Personel personel =new Personel();
-            Console.WriteLine("Email Adresini Giriniz =");
-            string email = Console.ReadLine();
-            Console.WriteLine("Şifrenizi Giriniz =");
-            string password = Console.ReadLine();
 
-            Console.WriteLine("First Name Giriniz =");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Last name Giriniz =");
-            string lastName = Console.ReadLine();
+            while (true)
+            {
+                Console.WriteLine("Email Adresini Giriniz =");
+                string email = Console.ReadLine();
+                Console.WriteLine("Şifrenizi Giriniz =");
+                string password = Console.ReadLine();
+                if (IsLogin(email, password) == true)
+                {
+                    Console.WriteLine("Login işlemi başarılı.\n");
+                    Thread.Sleep(1000);
 
-            Console.WriteLine("Mola Saatinizi Giriniz =");
-            int molaSaati =Convert.ToInt32(Console.ReadLine());
+                    //Console.WriteLine("Çalışma Saatinizi Giriniz =");
+                    //int calismaSaati = Convert.ToInt32(Console.ReadLine());
 
-            personel.FirstName = firstName;
-            personel.LastName = lastName;
-            personel.StartDate = DateTime.Now;
-            //personel.EndDate = DateTime.Now.AddHours();
+                    //Console.WriteLine("Mola Saatinizi Giriniz =");
+                    //int molaSaati = Convert.ToInt32(Console.ReadLine());
 
-            if (IsLogin(personel.Email, personel.Password))
+                    List<Personel> personels = new List<Personel>
+                {
+                    new Personel("Küçükkoç","Ramazan",DateTime.Now,DateTime.Now.AddHours(1),3,8),
+                    new Personel("Avcı","Ahmet",DateTime.Now,DateTime.Now.AddHours(2),1,7),
+                    new Personel("Eren","Mehmet",DateTime.Now,DateTime.Now.AddHours(3),2,6),
+
+                };
+
+
+                    foreach (var item in personels)
                     {
+                        Console.WriteLine(item.FirstName + " " + item.LastName);
 
-                        if (personel.EndDate.Hour - personel.StartDate.Hour < 7 && personel.EndDate.Hour - personel.StartDate.Hour > 1)
-                        {
-                            hesapUcreti = ((personel.EndDate.Hour - personel.StartDate.Hour) - personel.MolaSaati) * 50;
-                            Console.WriteLine($"{personel.FirstName} {personel.LastName}  personelimiz alacagı ücret = {hesapUcreti} bu kadarduır.");
-                        }
-                        else if (personel.EndDate.Hour > 7)
-                        {
-                            Console.WriteLine("Gayretiniz için teşekkürler mesaiye kaldınız için tebrikler.");
-                            int ekMesaiSaati = (personel.EndDate.Hour - personel.StartDate.Hour) - 7;
-                            int mesaiSaatiUcreti = ekMesaiSaati * 60;
-                            hesapUcreti = (((7 - ekMesaiSaati) - personel.MolaSaati) * 50) + mesaiSaatiUcreti;
-
-                            Console.WriteLine($"Şirketimiz çalışan {personel.FirstName} {personel.LastName} Personolümüzün Mesaiye kaldınız için ücretiniz= {hesapUcreti}");
-                        }
 
                     }
-                    else
+                    Console.Write("\nHangi seçmek istiyorsun. ? (Personelin adı soyadını giriniz)");
+                    string secilenPersonelAdiSoyadi = Console.ReadLine();
+
+                    Personel secilenPersonel = null;
+                    foreach (var personel in personels)
                     {
-                        yanlisGirisSayısı++;
-                        Console.WriteLine($"Şifre veya Email adresiniz Yanlış lütfen tekrar deneyiniz {(3 - yanlisGirisSayısı)} hakkınız kaldı. DİKKAT !!!!!!");
+                        if (personel.FirstName.Trim() + " " + personel.LastName.Trim() == secilenPersonelAdiSoyadi.Trim())
+                            secilenPersonel = personel; break;
                     }
+                    if (secilenPersonel != null)
+                    {
+                        Console.WriteLine($"\n{secilenPersonel.FirstName.Trim() + " " + secilenPersonel.LastName.Trim()} personel seçildi");
+                        int endDate = secilenPersonel.EndDate.AddHours(secilenPersonel.CalismaSaati).Hour;
+                        int startDate = secilenPersonel.StartDate.Hour;
+                       
+                            if (secilenPersonel.CalismaSaati <= 7 && endDate - startDate <= 1)
+                            {
+                                hesapUcreti = ((secilenPersonel.CalismaSaati) - secilenPersonel.MolaSaati) * 50;
+                                Console.WriteLine($"{secilenPersonel.FirstName} {secilenPersonel.LastName}  personelimiz alacagı ücret = {hesapUcreti} bu kadarduır.");
 
-            
-            if (yanlisGirisSayısı == 3)
-                Console.WriteLine("Sistem bloke oldu bilgi işlemle iletişime geçin.");
+                            }
+                            else if (secilenPersonel.CalismaSaati > 7)
+                            {
 
-            Console.WriteLine("Program çalışma süresi =" + GecenSure());
+                                Console.WriteLine("Gayretiniz için teşekkürler mesaiye kaldınız için tebrikler.");
+                                int ekMesaiSaati = (secilenPersonel.CalismaSaati) - 7;
+                                int mesaiSaatiUcreti = ekMesaiSaati * 60;
+                                hesapUcreti = ((7 - secilenPersonel.MolaSaati) * 50) + mesaiSaatiUcreti;
+                                Console.WriteLine($"Şirketimiz çalışan {secilenPersonel.FirstName} {secilenPersonel.LastName} Personolümüzün Mesaiye kaldınız için ücretiniz= {hesapUcreti}");
+
+                            }
+
+                        }      
+                    
+                }
+                else
+                {
+                    yanlisGirisSayısı++;
+                    Console.WriteLine($"Şifre veya Email adresiniz Yanlış lütfen tekrar deneyiniz {(3 - yanlisGirisSayısı)} hakkınız kaldı. DİKKAT !!!!!!");
+                }
+                if (yanlisGirisSayısı == 3)
+                {
+                    Console.WriteLine("Sistem bloke oldu bilgi işlemle iletişime geçin.");
+                    break;
+                }
+
+            }
+
+
+
+            // Console.WriteLine("Program çalışma süresi =" + GecenSure());
             //GetLenght() metodunu önemli.
             Console.ReadKey();
         }
@@ -116,13 +145,9 @@ namespace Techcareer_Tutorial
 
         private static bool IsLogin(string email, string password)
         {
-            Console.WriteLine("Mail Adresinizi Giriniz =");
-            string loginEmail = Console.ReadLine();
-            Console.Write("Şifrenizi Giriniz =");
-            string loginPassword = Console.ReadLine();
-            if (loginEmail == email && loginPassword == password)
+
+            if (email == "kullanici@gmail.com" && password == "sifre")
             {
-                Console.WriteLine("İşlem Başarılı");
                 return true;
             }
             Console.WriteLine("Email  veya şifrenizi Kontrol Ediniz");
@@ -133,15 +158,26 @@ namespace Techcareer_Tutorial
     }
     class Personel
     {
-        public Guid Id { get; set; }= Guid.NewGuid();
         public string LastName { get; set; }
         public string FirstName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int MolaSaati { get; set; } = 0;
+        public int CalismaSaati { get; set; } = 0;
         public string CompanyName { get; set; } = "Küçükkoç Holding";
+
+
+
+        public Personel(string lastName, string firstName, DateTime startDate, DateTime endDate, int molasaati, int calismaSaati)
+        {
+            LastName = lastName;
+            FirstName = firstName;
+            StartDate = startDate;
+            EndDate = endDate;
+            MolaSaati = molasaati;
+            CalismaSaati = calismaSaati;
+
+        }
     }
 
 }
