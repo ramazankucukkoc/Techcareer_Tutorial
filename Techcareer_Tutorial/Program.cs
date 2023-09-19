@@ -103,8 +103,6 @@ namespace Techcareer_Tutorial
             return gecenSure;
         }
 
-
-
         private static bool IsLogin(string email, string password)
         {
 
