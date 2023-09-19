@@ -25,20 +25,13 @@ namespace Techcareer_Tutorial
                     Console.WriteLine("Login işlemi başarılı.\n");
                     Thread.Sleep(1000);
 
-                    //Console.WriteLine("Çalışma Saatinizi Giriniz =");
-                    //int calismaSaati = Convert.ToInt32(Console.ReadLine());
-
-                    //Console.WriteLine("Mola Saatinizi Giriniz =");
-                    //int molaSaati = Convert.ToInt32(Console.ReadLine());
-
                     List<Personel> personels = new List<Personel>
                 {
-                    new Personel("Küçükkoç","Ramazan",DateTime.Now,DateTime.Now.AddHours(1),3,8),
-                    new Personel("Avcı","Ahmet",DateTime.Now,DateTime.Now.AddHours(2),1,7),
-                    new Personel("Eren","Mehmet",DateTime.Now,DateTime.Now.AddHours(3),2,6),
+                    new Personel("Ramazan","Küçükkoç",null,null,3,8),
+                    new Personel("Ahmet","Avcı",null,null,1,7),
+                    new Personel("Mehmet", "Eren",null,null,2,6),
 
                 };
-
 
                     foreach (var item in personels)
                     {
@@ -46,40 +39,43 @@ namespace Techcareer_Tutorial
 
 
                     }
-                    Console.Write("\nHangi seçmek istiyorsun. ? (Personelin adı soyadını giriniz)");
+                    Console.WriteLine("\nHangi seçmek istiyorsun. ? (Personelin adı soyadını giriniz)");
                     string secilenPersonelAdiSoyadi = Console.ReadLine();
 
                     Personel secilenPersonel = null;
                     foreach (var personel in personels)
                     {
-                        if (personel.FirstName.Trim() + " " + personel.LastName.Trim() == secilenPersonelAdiSoyadi.Trim())
-                            secilenPersonel = personel; break;
+                        if ((personel.FirstName + " " + personel.LastName).Equals(secilenPersonelAdiSoyadi, StringComparison.OrdinalIgnoreCase))
+                            secilenPersonel = personel;
                     }
                     if (secilenPersonel != null)
                     {
-                        Console.WriteLine($"\n{secilenPersonel.FirstName.Trim() + " " + secilenPersonel.LastName.Trim()} personel seçildi");
-                        int endDate = secilenPersonel.EndDate.AddHours(secilenPersonel.CalismaSaati).Hour;
-                        int startDate = secilenPersonel.StartDate.Hour;
-                       
-                            if (secilenPersonel.CalismaSaati <= 7 && endDate - startDate <= 1)
-                            {
-                                hesapUcreti = ((secilenPersonel.CalismaSaati) - secilenPersonel.MolaSaati) * 50;
-                                Console.WriteLine($"{secilenPersonel.FirstName} {secilenPersonel.LastName}  personelimiz alacagı ücret = {hesapUcreti} bu kadarduır.");
+                        Console.WriteLine($"\n {secilenPersonel.FirstName.Trim() + " " + secilenPersonel.LastName.Trim()} personel seçildi");
+                        TimeZoneInfo germanyTime = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+                        DateTime germanyTimeNow = TimeZoneInfo.ConvertTime(DateTime.Now, germanyTime);
+                        int startDate = germanyTimeNow.Hour;
+                        int endDate = germanyTimeNow.AddHours(secilenPersonel.CalismaSaati).Hour;
+                        
 
-                            }
-                            else if (secilenPersonel.CalismaSaati > 7)
-                            {
+                        if (endDate-startDate <= 7 || endDate - startDate <= 1)
+                        {
+                            hesapUcreti = ((secilenPersonel.CalismaSaati) - secilenPersonel.MolaSaati) * 50;
+                            Console.WriteLine($"{secilenPersonel.FirstName} {secilenPersonel.LastName}  personelimiz alacagı ücret = {hesapUcreti} $ kadardır.");
 
-                                Console.WriteLine("Gayretiniz için teşekkürler mesaiye kaldınız için tebrikler.");
-                                int ekMesaiSaati = (secilenPersonel.CalismaSaati) - 7;
-                                int mesaiSaatiUcreti = ekMesaiSaati * 60;
-                                hesapUcreti = ((7 - secilenPersonel.MolaSaati) * 50) + mesaiSaatiUcreti;
-                                Console.WriteLine($"Şirketimiz çalışan {secilenPersonel.FirstName} {secilenPersonel.LastName} Personolümüzün Mesaiye kaldınız için ücretiniz= {hesapUcreti}");
+                        }
+                        else if (endDate-startDate > 7)
+                        {
 
-                            }
+                            Console.WriteLine("Gayretiniz için teşekkürler mesaiye kaldınız için tebrikler.");
+                            int ekMesaiSaati = (secilenPersonel.CalismaSaati) - 7;
+                            int mesaiSaatiUcreti = ekMesaiSaati * 60;
+                            hesapUcreti = ((7 - secilenPersonel.MolaSaati) * 50) + mesaiSaatiUcreti;
+                            Console.WriteLine($"Şirketimiz çalışan {secilenPersonel.FirstName} {secilenPersonel.LastName} Personolümüzün Mesaiye kaldınız için ücretiniz= {hesapUcreti} $");
 
-                        }      
-                    
+                        }
+
+                    }
+
                 }
                 else
                 {
@@ -93,11 +89,6 @@ namespace Techcareer_Tutorial
                 }
 
             }
-
-
-
-            // Console.WriteLine("Program çalışma süresi =" + GecenSure());
-            //GetLenght() metodunu önemli.
             Console.ReadKey();
         }
 
@@ -112,7 +103,7 @@ namespace Techcareer_Tutorial
             return gecenSure;
         }
 
-       
+
 
         private static bool IsLogin(string email, string password)
         {
@@ -131,15 +122,15 @@ namespace Techcareer_Tutorial
     {
         public string LastName { get; set; }
         public string FirstName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int MolaSaati { get; set; } = 0;
         public int CalismaSaati { get; set; } = 0;
         public string CompanyName { get; set; } = "Küçükkoç Holding";
 
 
 
-        public Personel(string lastName, string firstName, DateTime startDate, DateTime endDate, int molasaati, int calismaSaati)
+        public Personel(string firstName, string lastName, DateTime? startDate, DateTime? endDate, int molasaati, int calismaSaati)
         {
             LastName = lastName;
             FirstName = firstName;
