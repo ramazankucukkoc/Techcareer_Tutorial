@@ -10,72 +10,76 @@ namespace Techcareer_Tutorial
     {
         static void Main(string[] args)
         {
-            //Ornek1();
             int yanlisGirisSayısı = 0;
             int hesapUcreti = 0;
-
-            while (true)
+            List<Personel> personels = new List<Personel>
+                {
+                    new Personel("Ramazan","Küçükkoç",DateTime.Now,3,8),
+                    new Personel("Ahmet","Avcı",DateTime.Now,1,7),
+                    new Personel("Mehmet", "Eren",DateTime.Now,2,6),
+                };
+            while (personels.Count>0)
             {
-                Console.WriteLine("Email Adresini Giriniz =");
+                Console.Write("Email Adresini Giriniz =");
                 string email = Console.ReadLine();
-                Console.WriteLine("Şifrenizi Giriniz =");
+                Console.Write("Şifrenizi Giriniz =");
                 string password = Console.ReadLine();
+
+
                 if (IsLogin(email, password) == true)
                 {
                     Console.WriteLine("Login işlemi başarılı.\n");
                     Thread.Sleep(1000);
 
-                    List<Personel> personels = new List<Personel>
-                {
-                    new Personel("Ramazan","Küçükkoç",null,null,3,8),
-                    new Personel("Ahmet","Avcı",null,null,1,7),
-                    new Personel("Mehmet", "Eren",null,null,2,6),
-
-                };
-
                     foreach (var item in personels)
                     {
-                        Console.WriteLine(item.FirstName + " " + item.LastName);
-
-
+                        string name = item.FirstName + " " + item.LastName;
+                        Console.WriteLine(name);
                     }
-                    Console.WriteLine("\nHangi seçmek istiyorsun. ? (Personelin adı soyadını giriniz)");
+                    Console.Write("\n Hangi seçmek istiyorsun. ? (Personelin adı soyadını giriniz):");
                     string secilenPersonelAdiSoyadi = Console.ReadLine();
 
                     Personel secilenPersonel = null;
+
                     foreach (var personel in personels)
                     {
-                        if ((personel.FirstName + " " + personel.LastName).Equals(secilenPersonelAdiSoyadi, StringComparison.OrdinalIgnoreCase))
+                        string name = personel.FirstName + " " + personel.LastName;
+                        if ((name).Equals(secilenPersonelAdiSoyadi, StringComparison.OrdinalIgnoreCase))
                             secilenPersonel = personel;
                     }
                     if (secilenPersonel != null)
                     {
+
                         Console.WriteLine($"\n {secilenPersonel.FirstName.Trim() + " " + secilenPersonel.LastName.Trim()} personel seçildi");
                         TimeZoneInfo germanyTime = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-                        DateTime germanyTimeNow = TimeZoneInfo.ConvertTime(DateTime.Now, germanyTime);
+                        DateTime germanyTimeNow = TimeZoneInfo.ConvertTime(secilenPersonel.StartDate, germanyTime);
+
                         int startDate = germanyTimeNow.Hour;
                         int endDate = germanyTimeNow.AddHours(secilenPersonel.CalismaSaati).Hour;
-                        
 
-                        if (endDate-startDate <= 7 || endDate - startDate <= 1)
+
+                        if (endDate - startDate <= 7 || endDate - startDate <= 1)
                         {
                             hesapUcreti = ((secilenPersonel.CalismaSaati) - secilenPersonel.MolaSaati) * 50;
                             Console.WriteLine($"{secilenPersonel.FirstName} {secilenPersonel.LastName}  personelimiz alacagı ücret = {hesapUcreti} $ kadardır.");
 
                         }
-                        else if (endDate-startDate > 7)
+                        else if (endDate - startDate > 7)
                         {
 
                             Console.WriteLine("Gayretiniz için teşekkürler mesaiye kaldınız için tebrikler.");
                             int ekMesaiSaati = (secilenPersonel.CalismaSaati) - 7;
-                            int mesaiSaatiUcreti = ekMesaiSaati * 60;
+                            int mesaiSaatiUcreti = ekMesaiSaati * 100;
                             hesapUcreti = ((7 - secilenPersonel.MolaSaati) * 50) + mesaiSaatiUcreti;
                             Console.WriteLine($"Şirketimiz çalışan {secilenPersonel.FirstName} {secilenPersonel.LastName} Personolümüzün Mesaiye kaldınız için ücretiniz= {hesapUcreti} $");
 
                         }
 
                     }
-
+                    Console.WriteLine($"{secilenPersonel.FirstName + " " + secilenPersonel.LastName} günlük parası hesaplanıp listeden çıkarıldı.");
+                    Console.WriteLine("------------------------------------------------------");
+                    Console.WriteLine($"{personels.Count -1} personel kaldı.");
+                    personels.Remove(secilenPersonel);
                 }
                 else
                 {
@@ -120,20 +124,18 @@ namespace Techcareer_Tutorial
     {
         public string LastName { get; set; }
         public string FirstName { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime StartDate { get; set; }
         public int MolaSaati { get; set; } = 0;
         public int CalismaSaati { get; set; } = 0;
         public string CompanyName { get; set; } = "Küçükkoç Holding";
 
 
 
-        public Personel(string firstName, string lastName, DateTime? startDate, DateTime? endDate, int molasaati, int calismaSaati)
+        public Personel(string firstName, string lastName, DateTime startDate, int molasaati, int calismaSaati)
         {
             LastName = lastName;
             FirstName = firstName;
             StartDate = startDate;
-            EndDate = endDate;
             MolaSaati = molasaati;
             CalismaSaati = calismaSaati;
 
