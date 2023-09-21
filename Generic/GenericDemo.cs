@@ -7,6 +7,7 @@ namespace Generic
         // Type --> T
         public T Add<T>(T a, T b)
         {
+
             return (dynamic)a + (dynamic)b;
         }
         public void Run()

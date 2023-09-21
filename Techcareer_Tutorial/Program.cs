@@ -100,7 +100,6 @@ namespace Techcareer_Tutorial
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start(); //zamanı başlattı
-
             //İşlemleri Gerçekleştirdim
             stopwatch.Stop();
             TimeSpan gecenSure = stopwatch.Elapsed;// geçen süreyi al
