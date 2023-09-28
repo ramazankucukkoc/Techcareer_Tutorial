@@ -33,69 +33,93 @@ namespace Benzin_Otomasyonu
                 ,
                 Amount = 20
             });
-            while (true)
+
+            Console.Write("Email Adresinizi Giriniz");
+            string email = Console.ReadLine();
+            Console.Write("Şifrenizi Giriniz");
+            string password = Console.ReadLine();
+
+            if (Login(email, password) == true)
             {
-                Console.WriteLine("Lütfen Yapmak istediğiniz işlmei giriniz:");
-                Console.WriteLine("1- Alış");
-                Console.WriteLine("2- Satış");
-                Console.WriteLine("3- Excel'e Verileri Kaydet");
-                Console.WriteLine("4-Çıkış");
+                Console.WriteLine("1.Market işlemleri için 1 Tuşlayın");
+                Console.WriteLine("2.Petrol (Pompa) işlemleri için 2 Tuşlayın");
+                int secim1 = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("Seçiminiz Giriniz ");
-                string secim = Console.ReadLine();
-
-                switch (secim)
+                switch (secim1)
                 {
-                    case "1":
-                        Console.WriteLine("Alış Sayfasına Hoşgeldiniz..");
-                        UrunListesi();
-                        Console.WriteLine("Ürünlerde birinin ismini yazabilirsin");
-                        AlinanUrun();
-                        break;
-                    case "2":
-                        Console.WriteLine("Satış Sayfasına Hoşgeldiniz..");
-                        UrunListesi();
-                        Console.WriteLine("Ürünlerde birinin ismini yazabilirsin");
-                        SatilanUrun();
-                        break;
-                    case "3":
-                        Console.WriteLine("Excel'e verileri aktarma Sayfası");
-                        ExcelVeriEkle();
-                        break;
-                    case "4":
-                        return;
-
-                    default:
-                        Console.WriteLine("Geçersiz Seçim");
-                        break;
-                }
-            }
-        }
-        static void Okumaİslemi()
-        {
-            try
-            {
-                using (var workbook =new XLWorkbook())
-                {
-                    var worksheet = workbook.Worksheet(1);
-                    int urunAdi = 1;
-                    foreach (var satir in worksheet.RowsUsed().Skip(1))
-                    {
-                        string ad = satir.Cell(urunAdi).Value.ToString();
-                        if (!products.Any(urun=>urun.Name ==ad))
+                    case 1: 
+                        while (true)
                         {
+                            Console.WriteLine("Lütfen Yapmak istediğiniz işlemi giriniz:");
+                            Console.WriteLine("1- Alış");
+                            Console.WriteLine("2- Satış");
+                            Console.WriteLine("3- Excel'e Verileri Kaydet");
+                            Console.WriteLine("4-Çıkış");
 
+                            Console.WriteLine("Seçiminiz Giriniz ");
+                            string secim2 = Console.ReadLine();
+
+                            switch (secim2)
+                            {
+                                case "1":
+                                    Console.WriteLine("Alış Sayfasına Hoşgeldiniz..");
+                                    UrunListesi();
+                                    Console.WriteLine("Ürünlerde birinin ismini yazabilirsin");
+                                    AlinanUrun();
+                                    break;
+                                case "2":
+                                    Console.WriteLine("Satış Sayfasına Hoşgeldiniz..");
+                                    UrunListesi();
+                                    Console.WriteLine("Ürünlerde birinin ismini yazabilirsin");
+                                    SatilanUrun();
+                                    break;
+                                case "3":
+                                    Console.WriteLine("Excel'e verileri aktarma Sayfası");
+                                    ExcelVeriEkle();
+                                    break;
+                                case "4":
+                                    return;
+
+                                default:
+                                    Console.WriteLine("Geçersiz Seçim");
+                                    break;
+                            }
                         }
-                    }
+                    case 2:
+
+                        break;
+                    default:
+                        break;
                 }
 
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
         }
+        //static void Okumaİslemi()
+        //{
+        //    try
+        //    {
+        //        using (var workbook =new XLWorkbook())
+        //        {
+        //            var worksheet = workbook.Worksheet(1);
+        //            int urunAdi = 1;
+        //            foreach (var satir in worksheet.RowsUsed().Skip(1))
+        //            {
+        //                string ad = satir.Cell(urunAdi).Value.ToString();
+        //                if (!products.Any(urun=>urun.Name ==ad))
+        //                {
+        //                    products.Add(new Product { Name=ad,Amount=products.})
+        //                }
+        //            }
+        //        }
+
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
         static void ExcelVeriEkle()
         {
             using (var workbook = new XLWorkbook())
@@ -177,7 +201,7 @@ namespace Benzin_Otomasyonu
                 Console.WriteLine($"{urun.Name} {urun.UnitPrice}$ ");
             }
         }
-        static bool MarketLogin(string email, string password)
+        static bool Login(string email, string password)
         {
             string userName = email.ToLower().Trim();
             string passWord = password.ToLower().Trim();
@@ -190,7 +214,7 @@ namespace Benzin_Otomasyonu
             return false;
 
         }
-   
-    
+
+
     }
 }
